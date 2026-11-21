@@ -9,6 +9,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased">
 
+  <!-- TOP BAR -->
   <header class="sticky top-0 z-30 bg-slate-900/95 backdrop-blur border-b border-slate-800 shadow-lg">
     <div class="max-w-5xl mx-auto px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2">
       <div class="flex items-center gap-2.5">
@@ -30,13 +31,20 @@
       <div class="flex items-center gap-1.5 flex-wrap">
         <div class="flex items-center bg-slate-800 border border-slate-700 rounded-xl px-2.5 py-1">
           <i class="fa-solid fa-phone text-orange-400 text-xs mr-1.5"></i>
-          <input id="userPhoneInput" type="text" placeholder="Nhập SĐT của bạn..."
+          <input id="userPhoneInput" type="text" maxlength="16" placeholder="SĐT 10 số của bạn..."
+            onchange="updateUserPhone(this.value)"
             class="bg-transparent text-xs text-slate-100 placeholder-slate-400 focus:outline-none w-32" />
           <button onclick="savePhoneFromInput()"
             class="ml-1 px-2.5 py-0.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-[11px] font-bold transition">
             Lưu
           </button>
         </div>
+
+        <button onclick="openSizeGuideModal()" title="Đo chân chọn size giày chuẩn"
+          class="px-2.5 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-ruler-combined"></i>
+          <span>Đo Size</span>
+        </button>
 
         <button onclick="manualSync()" title="Đồng bộ dữ liệu từ Google Sheets"
           class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition">
@@ -52,55 +60,66 @@
       </div>
     </div>
 
-    <div class="max-w-5xl mx-auto px-3.5 flex items-center gap-1 overflow-x-auto border-t border-slate-800/80 text-xs font-bold">
+    <!-- NAVIGATION TABS -->
+    <div class="max-w-5xl mx-auto px-3.5 py-1 flex items-center gap-1.5 overflow-x-auto border-t border-slate-800/80 text-xs font-bold">
       <button id="tab-market" onclick="switchTab('market')"
-        class="px-3 py-2.5 border-b-2 border-orange-500 text-orange-400 whitespace-nowrap flex items-center gap-1.5">
+        class="px-3 py-2 border-b-2 border-orange-500 text-orange-400 whitespace-nowrap flex items-center gap-1.5">
         <i class="fa-solid fa-store"></i> Sàn Giày
         <span id="badgeMarketCount" class="px-1.5 py-0.5 rounded-full bg-orange-500/20 text-orange-300 text-[10px]">0</span>
       </button>
 
       <button id="tab-post" onclick="switchTab('post')"
-        class="px-3 py-2.5 border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap flex items-center gap-1.5">
-        <i class="fa-solid fa-plus-circle text-emerald-400"></i> Đăng Pass Giày
+        class="px-3 py-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap flex items-center gap-1.5">
+        <i class="fa-solid fa-plus-circle text-emerald-400"></i> Đăng Bán Giày
       </button>
 
       <button id="tab-alerts" onclick="switchTab('alerts')"
-        class="px-3 py-2.5 border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap flex items-center gap-1.5">
+        class="px-3 py-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap flex items-center gap-1.5">
         <i class="fa-solid fa-bell text-amber-400"></i> Săn Size
         <span id="badgeAlertsCount" class="px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-300 text-[10px]">0</span>
       </button>
 
       <button id="tab-my-shoes" onclick="switchTab('my-shoes')"
-        class="px-3 py-2.5 border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap flex items-center gap-1.5">
+        class="px-3 py-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap flex items-center gap-1.5">
         <i class="fa-solid fa-bag-shopping text-sky-400"></i> Tin Của Tôi
         <span id="badgeMyCount" class="px-1.5 py-0.5 rounded-full bg-slate-800 text-slate-300 text-[10px]">0</span>
       </button>
 
       <button id="tab-admin" onclick="switchTab('admin')"
-        class="px-3 py-2.5 border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap flex items-center gap-1.5 ml-auto">
+        class="px-3 py-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap flex items-center gap-1.5 ml-auto">
         <i class="fa-solid fa-user-shield text-rose-400"></i> Quản Trị
       </button>
     </div>
 
+    <!-- HOTLINE BAR -->
     <div class="bg-gradient-to-r from-orange-600/20 via-amber-500/15 to-orange-600/20 border-t border-orange-500/20 py-1.5 px-3.5 text-center text-[11px] text-orange-200">
       <span class="inline-flex items-center gap-1.5 font-bold text-orange-400">
         <i class="fa-solid fa-headset"></i> HOTLINE / ZALO ADMIN: 0906.075.077
       </span>
       <span class="mx-1.5 text-slate-500">•</span>
-      <span>Người mua cọc giữ chỗ 90 phút • Chốt bán thành công chuyển 10% phí cầu nối về tài khoản SHB <strong>7772345999</strong></span>
+      <span>Lưu SĐT 10 số & giữ chỗ 90 phút để mở liên hệ • Chốt bán thành công chuyển 10% phí cầu nối về tài khoản SHB <strong>7772345999</strong></span>
     </div>
   </header>
 
+  <!-- MAIN CONTENT -->
   <main class="max-w-5xl mx-auto px-3.5 py-4 pb-16">
+
+    <!-- ==================== SÀN GIÀY ==================== -->
     <section id="sec-market" class="space-y-3.5">
       <div class="bg-slate-900 p-3.5 rounded-2xl border border-slate-800 shadow-lg space-y-3">
         <div class="flex flex-col sm:flex-row gap-2">
           <div class="relative flex-grow">
             <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
             <input id="searchInput" oninput="renderMarket()" type="text"
-              placeholder="Tìm tên giày, thương hiệu (Mizuno, Nike, Adidas, Puma...)..."
+              placeholder="Tìm tên giày, hãng, khu vực (BMT, Cư M'gar, Cumgar, Cư Jút...)"
               class="w-full bg-slate-800/90 border border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:border-orange-500 transition" />
           </div>
+
+          <button type="button" onclick="openSizeGuideModal()"
+            class="px-3 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center justify-center gap-1.5 whitespace-nowrap transition">
+            <i class="fa-solid fa-ruler-combined"></i>
+            <span>Đo Chân Chọn Size</span>
+          </button>
 
           <select id="statusFilter" onchange="renderMarket()"
             class="bg-slate-800/90 border border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold text-slate-200 focus:outline-none focus:border-orange-500">
@@ -134,25 +153,33 @@
           <button id="sizeBtn-43" onclick="setSizeFilter('43')" class="size-btn px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 hover:border-orange-500/50 font-semibold text-[11px]">43</button>
           <button id="sizeBtn-44" onclick="setSizeFilter('44')" class="size-btn px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300 hover:border-orange-500/50 font-semibold text-[11px]">44</button>
         </div>
+
+        <div id="dynamicLocationBar" class="flex items-center gap-1.5 overflow-x-auto pb-0.5 text-xs"></div>
       </div>
 
       <div id="emptyState" class="hidden text-center py-12 bg-slate-900 rounded-2xl border border-slate-800 space-y-2.5">
         <i class="fa-solid fa-box-open text-3xl text-slate-500"></i>
-        <p class="text-sm font-bold text-slate-200">Chưa có đôi giày nào trên sàn</p>
-        <p class="text-xs text-slate-400">Chưa có sản phẩm nào khớp bộ lọc hoặc hệ thống đang cập nhật. Hãy là người đầu tiên đăng pass giày!</p>
-        <button onclick="switchTab('post')" class="mt-1 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-extrabold transition">
-          <i class="fa-solid fa-plus-circle mr-1"></i> Đăng Pass Giày Ngay
-        </button>
+        <p class="text-sm font-bold text-slate-200">Chưa có đôi giày nào khớp bộ lọc</p>
+        <p class="text-xs text-slate-400">Thử đổi khu vực/size hoặc đăng bán giày mới lên sàn ngay!</p>
+        <div class="flex items-center justify-center gap-2 pt-1">
+          <button onclick="resetAllFilters()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-bold transition">
+            Xóa bộ lọc
+          </button>
+          <button onclick="openPostTabGuarded()" class="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-extrabold transition">
+            <i class="fa-solid fa-plus-circle mr-1"></i> Đăng Bán Giày Ngay
+          </button>
+        </div>
       </div>
 
       <div id="marketGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
     </section>
 
+    <!-- ==================== ĐĂNG BÁN GIÀY ==================== -->
     <section id="sec-post" class="hidden max-w-xl mx-auto">
       <div class="bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-800 shadow-lg space-y-4">
         <div class="flex items-center justify-between">
           <div>
-            <h2 class="text-base font-extrabold text-white">ĐĂNG PASS GIÀY LƯỚT</h2>
+            <h2 class="text-base font-extrabold text-white">ĐĂNG BÁN GIÀY</h2>
             <p class="text-xs text-slate-400">Đăng tin trực tiếp lên hệ thống • Phí kết nối 10% (tối thiểu 10.000đ) khi chốt đơn.</p>
           </div>
           <a href="tel:0906075077" class="px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-xs font-bold text-orange-400 hover:bg-slate-700">
@@ -163,7 +190,7 @@
         <form id="postForm" onsubmit="handlePostSubmit(event)" class="space-y-3 text-xs">
           <div>
             <label class="block text-slate-300 font-bold mb-1">Tên giày & phối màu *</label>
-            <input id="postName" required type="text" placeholder="VD: Giày thể thao Wika Netic ĐỎ"
+            <input id="postName" required type="text" placeholder="VD: Giày Prince mới 100% / Giày Tennis/Pickleball"
               class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-orange-500" />
           </div>
 
@@ -188,14 +215,15 @@
 
           <div class="grid grid-cols-2 gap-2.5">
             <div>
-              <label class="block text-slate-300 font-bold mb-1">Giá pass (VNĐ) *</label>
-              <input id="postPrice" required type="number" min="10000" step="1000" placeholder="VD: 390000"
+              <label class="block text-slate-300 font-bold mb-1">Giá bán (VNĐ) *</label>
+              <input id="postPrice" required type="number" min="10000" step="1000" placeholder="VD: 1800000"
                 class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-orange-500" />
             </div>
 
             <div>
               <label class="block text-slate-300 font-bold mb-1">Tình trạng *</label>
               <select id="postCondition" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 focus:outline-none focus:border-orange-500">
+                <option value="Mới 100% - Fullbox">Mới 100% - Fullbox</option>
                 <option value="99% - Lướt nhẹ">99% - Lướt nhẹ</option>
                 <option value="98% - Như mới">98% - Như mới</option>
                 <option value="95% - Đế đẹp">95% - Đế đẹp</option>
@@ -209,18 +237,24 @@
             <div>
               <label class="block text-slate-300 font-bold mb-1">Khu vực giao dịch *</label>
               <input id="postLocation" required type="text" value="Buôn Ma Thuột"
-                class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 focus:outline-none focus:border-orange-500" />
+                placeholder="VD: Buôn Ma Thuột, Cư M'gar, Cư Jút, Ea Kar..."
+                class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-orange-500" />
             </div>
 
             <div>
-              <label class="block text-slate-300 font-bold mb-1">SĐT / Zalo người bán *</label>
-              <input id="postSellerPhone" required type="tel" placeholder="09xxxxxxxx"
+              <label class="block text-slate-300 font-bold mb-1">SĐT / Zalo người bán (10 số) *</label>
+              <input id="postSellerPhone" required type="tel" maxlength="12" inputmode="numeric" placeholder="09xxxxxxxx"
+                oninput="checkFormBanWarning('post')"
                 class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-orange-500" />
             </div>
           </div>
 
+          <p id="postBanWarning" class="hidden text-rose-400 font-bold bg-rose-500/10 border border-rose-500/30 rounded-xl px-3 py-2">
+            <i class="fa-solid fa-ban mr-1"></i> SĐT này đang bị khóa trên sàn, không thể đăng tin!
+          </p>
+
           <div>
-            <label class="block text-slate-300 font-bold mb-1">Ảnh thực tế (Tối đa 2 ảnh)</label>
+            <label class="block text-slate-300 font-bold mb-1">Ảnh thực tế (Tối đa 2 ảnh • Tự nén nét ~600px)</label>
             <div class="grid grid-cols-2 gap-2.5">
               <label class="relative h-28 rounded-xl border border-dashed border-slate-700 bg-slate-800/60 flex flex-col items-center justify-center cursor-pointer hover:border-orange-500 overflow-hidden">
                 <input type="file" accept="image/*" onchange="handleImageCompress(event, 1)" class="hidden" />
@@ -235,7 +269,7 @@
                 <input type="file" accept="image/*" onchange="handleImageCompress(event, 2)" class="hidden" />
                 <div id="placeholder2" class="text-center text-slate-400 space-y-1">
                   <i class="fa-solid fa-shoe-prints text-lg text-orange-400"></i>
-                  <p class="text-[10px] font-semibold">Ảnh 2 (Đế / Tem)</p>
+                  <p class="text-[10px] font-semibold">Ảnh 2 (Đế / Keo / Tem)</p>
                 </div>
                 <img id="prevPhoto2" class="hidden w-full h-full object-cover" />
               </label>
@@ -250,34 +284,45 @@
 
           <button id="btnSubmitPost" type="submit"
             class="w-full py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs uppercase tracking-wide shadow-md transition">
-            <i class="fa-solid fa-paper-plane mr-1"></i> Đăng Pass Lên Sàn
+            <i class="fa-solid fa-paper-plane mr-1"></i> Đăng Bán Lên Sàn
           </button>
+
+          <div class="bg-slate-800/75 border border-slate-700/80 rounded-xl p-2.5 text-[11px] text-slate-300 space-y-1 leading-relaxed">
+            <p class="font-bold text-amber-300"><i class="fa-solid fa-circle-info mr-1"></i>Lưu ý dành cho người bán:</p>
+            <p>• Tin đăng sẽ tự động ẩn sau <strong>14 ngày</strong> nếu chưa chốt đơn (có thể bấm <strong>Mở Bán Lại</strong> trong mục <em>Tin Của Tôi</em>).</p>
+            <p>• Nếu đã bán qua nguồn khác hoặc đổi ý, vui lòng vào <strong>Tin Của Tôi → Gỡ Tin</strong> ngay. Để tin treo gây giữ chỗ hụt quá 2 lần sẽ bị khóa SĐT.</p>
+          </div>
         </form>
       </div>
     </section>
 
+    <!-- ==================== SĂN SIZE ==================== -->
     <section id="sec-alerts" class="hidden max-w-xl mx-auto space-y-3">
       <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-lg flex items-center justify-between gap-3">
         <div>
           <h2 class="text-sm font-extrabold text-white">SĂN SIZE GIÀY THEO YÊU CẦU</h2>
-          <p class="text-xs text-slate-400">Lưu môn & size bạn cần để dễ theo dõi khi có kèo mới.</p>
+          <p class="text-xs text-slate-400">Tin săn size ẩn hoàn toàn với người khác — chỉ chủ số mới thấy.</p>
         </div>
         <button onclick="openAddAlertModal()"
           class="px-3 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs whitespace-nowrap transition">
           <i class="fa-solid fa-plus mr-1"></i> Đăng ký săn size
         </button>
       </div>
+
       <div id="alertsList" class="space-y-2"></div>
     </section>
 
+    <!-- ==================== TIN CỦA TÔI ==================== -->
     <section id="sec-my-shoes" class="hidden space-y-3">
       <div class="bg-slate-900 p-3.5 rounded-2xl border border-slate-800 shadow-lg">
         <h2 class="text-sm font-extrabold text-white">TIN CỦA TÔI</h2>
-        <p class="text-xs text-slate-400">Các tin đăng hoặc giữ chỗ liên quan đến SĐT bạn đã lưu ở thanh trên.</p>
+        <p class="text-xs text-slate-400">Các tin đăng hoặc giữ chỗ liên quan đến SĐT bạn đã lưu ở thanh trên. Tin quá 14 ngày sẽ tự ẩn khỏi Sàn Giày — bấm vào tin để <strong>Mở Bán Lại</strong> hoặc <strong>Gỡ Tin</strong>.</p>
       </div>
+
       <div id="myShoesGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5"></div>
     </section>
 
+    <!-- ==================== QUẢN TRỊ ==================== -->
     <section id="sec-admin" class="hidden max-w-xl mx-auto space-y-4">
       <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-lg flex items-center justify-between">
         <div>
@@ -308,7 +353,7 @@
             </button>
             <button onclick="switchTab('post')"
               class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold transition">
-              Đăng Pass Nhanh
+              Đăng Bán Nhanh
             </button>
           </div>
         </div>
@@ -316,7 +361,7 @@
         <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-lg space-y-2.5 text-xs">
           <h3 class="font-extrabold text-slate-200 uppercase">Khóa SĐT Vi Phạm (Chặn Đăng, Giữ Chỗ & Săn Size)</h3>
           <div class="flex flex-col sm:flex-row gap-2">
-            <input id="banPhoneInput" type="tel" placeholder="SĐT cần khóa..."
+            <input id="banPhoneInput" type="tel" maxlength="12" inputmode="numeric" placeholder="SĐT 10 số cần khóa..."
               class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 flex-1" />
             <input id="banReasonInput" type="text" placeholder="Lý do..."
               class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 flex-1" />
@@ -334,8 +379,10 @@
         </div>
       </div>
     </section>
+
   </main>
 
+  <!-- FOOTER -->
   <footer class="border-t border-slate-800/80 bg-slate-900/60 py-3 px-3.5 text-[11px] text-slate-400">
     <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-2">
       <span>© GIÀY LƯỚT BMT • Sàn Kèo Giày Cũ Đắk Lắk</span>
@@ -343,11 +390,116 @@
     </div>
   </footer>
 
+  <!-- ==================== MODAL: ĐO CHÂN CHỌN SIZE CHUẨN ==================== -->
+  <div id="sizeGuideModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 overflow-y-auto">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-5 space-y-3.5 text-xs shadow-2xl my-auto max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-sm font-extrabold text-white"><i class="fa-solid fa-ruler-combined text-emerald-400 mr-1.5"></i>ĐO CHÂN CHỌN SIZE GIÀY CHUẨN</h3>
+          <p class="text-[11px] text-slate-400">Tính size gợi ý theo chiều dài bàn chân (cm) hoặc size đôi đang đi</p>
+        </div>
+        <button onclick="closeSizeGuideModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+      </div>
+
+      <div class="bg-slate-800/70 border border-slate-700/80 rounded-2xl p-2.5 space-y-2">
+        <div class="flex items-center justify-between text-[11px] font-bold text-emerald-300">
+          <span><i class="fa-solid fa-shoe-prints mr-1"></i>Sơ đồ hướng dẫn đo: Gót → Ngón dài nhất</span>
+          <span class="text-slate-400 font-normal">Đo cuối ngày</span>
+        </div>
+        <div class="bg-white rounded-xl overflow-hidden border border-slate-700">
+          <img src="https://encrypted-tbn2.gstatic.com/licensed-image?q=tbn:ANd9GcTQ2W7csXfRDSqh96EWS0k2oHKYnGspkAz0z5cMHWqNFCNZRG_ZWuls5iChsKjoS0RZBkRIqQBgE3XqkuQ"
+            alt="Sơ đồ hướng dẫn đo chân và đối chiếu size giày"
+            class="w-full h-36 object-contain mx-auto" />
+        </div>
+        <p class="text-[10px] text-slate-300 leading-relaxed">
+          1. Đặt chân lên tờ giấy áp sát tường, đi tất chơi thể thao. 2. Đánh dấu điểm đầu ngón chân dài nhất. 3. Dùng thước đo thẳng từ mép gót tới điểm đánh dấu (cm).
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-1.5 bg-slate-800/80 p-1 rounded-xl border border-slate-700">
+        <button type="button" id="sgModeCmBtn" onclick="setSizeGuideMode('cm')"
+          class="py-1.5 rounded-lg bg-emerald-600 text-white font-bold transition">
+          Đo bằng Cm (Chân)
+        </button>
+        <button type="button" id="sgModeEuBtn" onclick="setSizeGuideMode('eu')"
+          class="py-1.5 rounded-lg text-slate-300 hover:text-white font-semibold transition">
+          Đổi từ Size Đang Đi
+        </button>
+      </div>
+
+      <div id="sgCmBox" class="space-y-1.5">
+        <label class="block text-slate-300 font-bold">Chiều dài bàn chân (cm — đo từ gót tới ngón dài nhất):</label>
+        <div class="flex items-center gap-2">
+          <input id="sgFootCmInput" type="number" step="0.1" min="20" max="31" value="25.5" oninput="calculateRecommendedSize()"
+            class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 font-bold focus:outline-none focus:border-emerald-500" />
+          <span class="text-slate-400 font-bold">cm</span>
+        </div>
+      </div>
+
+      <div id="sgEuBox" class="hidden space-y-1.5">
+        <label class="block text-slate-300 font-bold">Size đôi giày bạn đang đi vừa:</label>
+        <select id="sgCurrentEuInput" onchange="calculateRecommendedSize()"
+          class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-100 font-bold focus:outline-none focus:border-emerald-500">
+          <option value="36">Size 36</option>
+          <option value="37">Size 37</option>
+          <option value="38">Size 38</option>
+          <option value="39">Size 39</option>
+          <option value="40">Size 40</option>
+          <option value="41" selected>Size 41</option>
+          <option value="42">Size 42</option>
+          <option value="43">Size 43</option>
+          <option value="44">Size 44</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2.5">
+        <div>
+          <label class="block text-slate-300 font-bold mb-1">Dáng bàn chân:</label>
+          <select id="sgFootShapeInput" onchange="calculateRecommendedSize()"
+            class="w-full bg-slate-800 border border-slate-700 rounded-xl px-2.5 py-2 text-slate-100 focus:outline-none focus:border-emerald-500">
+            <option value="normal">Bình thường</option>
+            <option value="wide">Chân bè / mu cao</option>
+            <option value="slim">Chân thon</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-slate-300 font-bold mb-1">Bộ môn chơi:</label>
+          <select id="sgSportInput" onchange="calculateRecommendedSize()"
+            class="w-full bg-slate-800 border border-slate-700 rounded-xl px-2.5 py-2 text-slate-100 focus:outline-none focus:border-emerald-500">
+            <option value="Bóng đá">⚽ Bóng đá</option>
+            <option value="Chạy bộ">🏃 Chạy bộ</option>
+            <option value="Cầu lông">🏸 Cầu lông</option>
+            <option value="Bóng rổ">🏀 Bóng rổ</option>
+            <option value="Tennis/Pickleball">🎾 Tennis/Pickleball</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="bg-slate-800/90 border border-emerald-500/30 rounded-2xl p-3.5 space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] text-slate-400 font-semibold">Size khuyến nghị trên sàn:</span>
+          <span id="sgResultSizeBadge" class="px-3 py-1 rounded-full bg-emerald-500 text-slate-950 font-black text-sm">EU 41</span>
+        </div>
+        <p id="sgResultAdvice" class="text-[11px] text-slate-200 leading-relaxed"></p>
+        <p id="sgMatchingStockText" class="text-[11px] text-emerald-300 font-bold"></p>
+      </div>
+
+      <button type="button" onclick="applyRecommendedSizeToMarket()"
+        class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold uppercase tracking-wide transition">
+        <i class="fa-solid fa-filter mr-1"></i> Lọc Giày Khớp Size Trên Sàn
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: DETAIL & 90-MIN LOCK ==================== -->
   <div id="detailModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 overflow-y-auto">
     <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl my-auto">
       <div class="relative h-64 bg-slate-800">
         <img id="modalMainImg" src="" class="w-full h-full object-cover" />
-        <span id="modalStatusBadge" class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-500 text-white shadow">Đang bán</span>
+        <span id="modalStatusBadge" class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-500 text-white shadow">
+          Đang bán
+        </span>
         <button onclick="closeDetailModal()"
           class="absolute top-3 right-3 w-8 h-8 rounded-full bg-slate-950/80 text-slate-200 flex items-center justify-center hover:bg-rose-600 hover:text-white border border-slate-700 transition">
           <i class="fa-solid fa-xmark"></i>
@@ -361,7 +513,9 @@
             <span id="modalCat" class="text-[10px] font-extrabold uppercase text-orange-400"></span>
             <h3 id="modalTitle" class="text-base font-extrabold text-white"></h3>
           </div>
-          <span id="modalPrice" class="text-lg font-black text-orange-400 whitespace-nowrap"></span>
+          <div class="text-right">
+            <span id="modalPrice" class="text-lg font-black text-orange-400 whitespace-nowrap"></span>
+          </div>
         </div>
 
         <div class="grid grid-cols-2 gap-2 bg-slate-800/80 p-2.5 rounded-2xl border border-slate-700/80 text-[11px]">
@@ -379,29 +533,33 @@
           <p>Thời gian còn lại: <strong id="modalCountdownText" class="text-amber-300"></strong></p>
         </div>
 
+        <p id="contactUnlockHint" class="text-[11px] text-amber-300/90 bg-amber-500/10 border border-amber-500/25 rounded-xl px-3 py-2">
+          <i class="fa-solid fa-shield-halved mr-1"></i> Lưu SĐT 10 số của bạn và bấm <strong>Giữ Chỗ 90 Phút</strong> để mở liên hệ Gọi Điện / Zalo người bán.
+        </p>
+
         <div class="grid grid-cols-3 gap-2 pt-1">
           <button id="btnReserveAction" onclick="reserveCurrentProduct()"
             class="col-span-3 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-extrabold uppercase tracking-wide transition">
             <i class="fa-solid fa-lock mr-1"></i> Giữ Chỗ 90 Phút
           </button>
 
-          <a id="btnCallSeller" href="#"
+          <button id="btnCallSeller" type="button" onclick="handleContactAction('call')"
             class="py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-center transition">
             <i class="fa-solid fa-phone mr-1"></i> Gọi Điện
-          </a>
+          </button>
 
-          <a id="btnZaloSeller" href="#" target="_blank"
+          <button id="btnZaloSeller" type="button" onclick="handleContactAction('zalo')"
             class="py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-center transition">
             <i class="fa-solid fa-comment-dots mr-1"></i> Zalo
-          </a>
+          </button>
 
-          <button onclick="shareCurrentShoe()"
+          <button type="button" onclick="shareCurrentShoe()"
             class="py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold text-center transition">
             <i class="fa-solid fa-qrcode mr-1"></i> QR / Share
           </button>
         </div>
 
-        <div id="sellerAdminControls" class="hidden pt-2 border-t border-slate-800 grid grid-cols-2 gap-2">
+        <div id="sellerAdminControls" class="hidden pt-2 border-t border-slate-800 grid grid-cols-3 gap-2">
           <button onclick="confirmSoldAndCloseQR()"
             class="py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-600 hover:text-white font-bold transition">
             <i class="fa-solid fa-check-circle mr-1"></i> Đã Bán
@@ -411,11 +569,17 @@
             class="py-2 rounded-xl bg-amber-500/15 border border-amber-500/40 text-amber-300 hover:bg-amber-500 hover:text-white font-bold transition">
             <i class="fa-solid fa-unlock mr-1"></i> Mở Bán Lại
           </button>
+
+          <button id="btnDeleteProduct" onclick="triggerDeleteProduct()"
+            class="py-2 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 hover:bg-rose-600 hover:text-white font-bold transition">
+            <i class="fa-solid fa-trash-can mr-1"></i> Gỡ Tin
+          </button>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- ==================== MODAL: VIETQR 10% FEE ==================== -->
   <div id="vietQrModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3">
     <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-5 text-center space-y-3 shadow-2xl">
       <h3 class="text-sm font-extrabold text-white">THANH TOÁN PHÍ KẾT NỐI 10%</h3>
@@ -423,13 +587,20 @@
       <div class="bg-white p-3 rounded-2xl inline-block">
         <img id="vietQrImg" src="" class="w-48 h-48 mx-auto" />
       </div>
-      <div class="flex gap-2 pt-2 text-xs">
-        <button onclick="closeVietQrModal()" class="flex-1 py-2.5 rounded-xl bg-slate-800 text-slate-300 font-bold">Đóng</button>
-        <button onclick="finishSoldProcess()" class="flex-1 py-2.5 rounded-xl bg-emerald-600 text-white font-extrabold">Xác Nhận Đã Bán</button>
+      <p class="text-[11px] text-slate-400">Sau khi chuyển khoản phí 10%, bạn có thể chọn xóa luôn tin khỏi sàn.</p>
+      <div class="flex flex-col gap-2 pt-1 text-xs">
+        <button id="btnConfirmSoldAndDelete" onclick="finishSoldProcess(true)" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold transition">
+          <i class="fa-solid fa-check-double mr-1"></i> Đã Chuyển Phí & Xóa Tin Khỏi Sàn
+        </button>
+        <div class="flex gap-2">
+          <button onclick="closeVietQrModal()" class="flex-1 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold">Đóng</button>
+          <button id="btnConfirmSoldOnly" onclick="finishSoldProcess(false)" class="flex-1 py-2 rounded-xl bg-slate-800 border border-emerald-500/40 text-emerald-300 font-bold">Chỉ Đánh Dấu Đã Bán</button>
+        </div>
       </div>
     </div>
   </div>
 
+  <!-- ==================== MODAL: ADD SIZE ALERT ==================== -->
   <div id="addAlertModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3">
     <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-5 space-y-3 text-xs shadow-2xl">
       <div class="flex items-center justify-between">
@@ -437,9 +608,13 @@
         <button onclick="closeAddAlertModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div>
-        <label class="block text-slate-300 font-bold mb-1">Số điện thoại / Zalo *</label>
-        <input id="alertPhoneInput" type="tel" placeholder="09xxxxxxxx" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-100" />
+        <label class="block text-slate-300 font-bold mb-1">Số điện thoại / Zalo (10 số) *</label>
+        <input id="alertPhoneInput" type="tel" maxlength="12" inputmode="numeric" placeholder="09xxxxxxxx" oninput="checkFormBanWarning('alert')"
+          class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-100" />
       </div>
+      <p id="alertBanWarning" class="hidden text-rose-400 font-bold bg-rose-500/10 border border-rose-500/30 rounded-xl px-3 py-2">
+        <i class="fa-solid fa-ban mr-1"></i> SĐT này đang bị khóa trên sàn, không thể săn size!
+      </p>
       <div>
         <label class="block text-slate-300 font-bold mb-1">Bộ môn</label>
         <select id="alertCatInput" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-100">
@@ -454,12 +629,13 @@
         <label class="block text-slate-300 font-bold mb-1">Size cần tìm *</label>
         <input id="alertSizeInput" type="text" placeholder="VD: 41" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-slate-100" />
       </div>
-      <button onclick="submitAlertRegistration()" class="w-full py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-extrabold">
+      <button id="btnSubmitAlert" onclick="submitAlertRegistration()" class="w-full py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-extrabold">
         Lưu Yêu Cầu Săn Size
       </button>
     </div>
   </div>
 
+  <!-- ==================== MODAL: SHARE LINK & QR CODE ==================== -->
   <div id="shareModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3">
     <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-5 text-center space-y-3 text-xs shadow-2xl">
       <div class="flex items-center justify-between">
@@ -482,9 +658,11 @@
 
   <script>
     const ADMIN_CODE = "204201504042019";
+    const ALERT_OWNER_OVERRIDE_PHONE = "0909215078";
     const SHB_ACCOUNT = "7772345999";
     const SHB_NAME = "NGUYEN UNG";
     const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzwZivoKG2ppSq0bCqD_DZmETComatIbNHz7gVpNpF-OivsxJ6JhIwF5OYzJW9p3XP8Q/exec";
+    const LISTING_TTL_MS = 14 * 24 * 60 * 60 * 1000;
 
     let savedUrl = localStorage.getItem('giayluot_script_url');
     let currentScriptUrl = (savedUrl && savedUrl.includes('/exec')) ? savedUrl.trim() : DEFAULT_SCRIPT_URL;
@@ -493,7 +671,10 @@
     let activePhone = localStorage.getItem('giayluot_user_phone') || "";
 
     let products = [];
+    let renewedAtMap = JSON.parse(localStorage.getItem('giayluot_renewed_at_v1') || '{}');
     let alerts = [];
+    let deletedAlertKeys = [];
+    let deletedProductIds = [];
     let blacklist = [];
     let logs = [];
 
@@ -502,19 +683,303 @@
 
     let selectedCategory = "ALL";
     let selectedSize = "ALL";
+    let selectedLocationNorm = "ALL";
 
     let currentDetailId = null;
     let timerInterval = null;
 
+    // ==================== HẾT HẠN SAU 14 NGÀY ====================
+    function saveRenewedAtMap() {
+      localStorage.setItem('giayluot_renewed_at_v1', JSON.stringify(renewedAtMap));
+    }
+
+    function getProductListingTimestamp(p) {
+      if (!p) return Date.now();
+      const renewedTs = Number(renewedAtMap[String(p.id)] || 0);
+      if (renewedTs > 0) return renewedTs;
+
+      const idMatch = String(p.id || '').match(/^BMT-(\d{10,15})/);
+      if (idMatch) {
+        const ts = Number(idMatch[1]);
+        if (!Number.isNaN(ts) && ts > 1600000000000) return ts;
+      }
+
+      if (p.createdAt) {
+        const str = String(p.createdAt).trim();
+        const vnMatch = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+        if (vnMatch) {
+          const d = new Date(Number(vnMatch[3]), Number(vnMatch[2]) - 1, Number(vnMatch[1]), 12, 0, 0);
+          if (!Number.isNaN(d.getTime())) return d.getTime();
+        }
+        const parsed = new Date(str);
+        if (!Number.isNaN(parsed.getTime())) return parsed.getTime();
+      }
+      return Date.now();
+    }
+
+    function isProductExpired14Days(p) {
+      if (!p || p.status === 'sold' || p.status === 'deleted' || p.status === 'banned') return false;
+      const postedTs = getProductListingTimestamp(p);
+      return (Date.now() - postedTs) > LISTING_TTL_MS;
+    }
+
+    // ==================== ĐO CHÂN CHỌN SIZE CHUẨN ====================
+    let sgMode = 'cm';
+    let sgRecommendedSize = '41';
+
+    function openSizeGuideModal() {
+      if (selectedCategory && selectedCategory !== 'ALL') {
+        const sportSelect = document.getElementById('sgSportInput');
+        if (sportSelect) sportSelect.value = selectedCategory;
+      }
+      if (selectedSize && selectedSize !== 'ALL') {
+        const euSelect = document.getElementById('sgCurrentEuInput');
+        if (euSelect) euSelect.value = selectedSize;
+      }
+      calculateRecommendedSize();
+      document.getElementById('sizeGuideModal').classList.remove('hidden');
+    }
+
+    function closeSizeGuideModal() {
+      document.getElementById('sizeGuideModal').classList.add('hidden');
+    }
+
+    function setSizeGuideMode(mode) {
+      sgMode = mode;
+      const cmBtn = document.getElementById('sgModeCmBtn');
+      const euBtn = document.getElementById('sgModeEuBtn');
+      const cmBox = document.getElementById('sgCmBox');
+      const euBox = document.getElementById('sgEuBox');
+
+      if (mode === 'cm') {
+        cmBtn.className = "py-1.5 rounded-lg bg-emerald-600 text-white font-bold transition";
+        euBtn.className = "py-1.5 rounded-lg text-slate-300 hover:text-white font-semibold transition";
+        cmBox.classList.remove('hidden');
+        euBox.classList.add('hidden');
+      } else {
+        euBtn.className = "py-1.5 rounded-lg bg-emerald-600 text-white font-bold transition";
+        cmBtn.className = "py-1.5 rounded-lg text-slate-300 hover:text-white font-semibold transition";
+        euBox.classList.remove('hidden');
+        cmBox.classList.add('hidden');
+      }
+      calculateRecommendedSize();
+    }
+
+    function footCmToBaseEu(cm) {
+      const val = Number(cm || 25.5);
+      const euRaw = Math.round((val + 1.2) * 1.5 - 14.5);
+      return Math.min(44, Math.max(36, euRaw));
+    }
+
+    function calculateRecommendedSize() {
+      const shape = document.getElementById('sgFootShapeInput')?.value || 'normal';
+      const sport = document.getElementById('sgSportInput')?.value || 'Bóng đá';
+
+      let baseEu = 41;
+      if (sgMode === 'cm') {
+        const cm = parseFloat(document.getElementById('sgFootCmInput')?.value || '25.5');
+        baseEu = footCmToBaseEu(cm);
+      } else {
+        baseEu = parseInt(document.getElementById('sgCurrentEuInput')?.value || '41', 10) || 41;
+      }
+
+      let adjust = 0;
+      if (shape === 'wide') adjust += 1;
+      else if (shape === 'slim') adjust -= 0.5;
+
+      if (sport === 'Chạy bộ') adjust += 0.5;
+      else if (sport === 'Bóng đá') adjust += 0.25;
+
+      const finalEu = Math.min(44, Math.max(36, Math.round(baseEu + adjust)));
+      sgRecommendedSize = String(finalEu);
+
+      const badge = document.getElementById('sgResultSizeBadge');
+      const adviceEl = document.getElementById('sgResultAdvice');
+      const stockEl = document.getElementById('sgMatchingStockText');
+
+      if (badge) badge.innerText = `EU ${sgRecommendedSize}`;
+
+      const sportTips = {
+        'Bóng đá': 'Giày đá banh cần ôm chân để sút và bứt tốc chuẩn; nếu đi tất dày hoặc chân bè nên ưu tiên size nhích lên.',
+        'Chạy bộ': 'Chạy bộ chân dễ nở sau 30–60 phút, nên chừa mũi chân khoảng 0.5 cm để không kích mũi.',
+        'Cầu lông': 'Giày cầu lông cần độ chắc cổ chân và mũi thoải mái khi phanh/đổi hướng nhanh.',
+        'Bóng rổ': 'Giày bóng rổ ưu tiên độ khóa gót và đệm êm, chân bè nên cân nhắc nhích nhẹ.',
+        'Tennis/Pickleball': 'Giày sân vợt cần ôm ngang thân bàn chân để di chuyển ngang không trượt mũi.'
+      };
+
+      const shapeNote = shape === 'wide'
+        ? 'Đã cộng thêm độ thoáng cho dáng chân bè/mu cao.'
+        : (shape === 'slim' ? 'Đã cân chỉnh cho dáng chân thon.' : 'Áp dụng form chân tiêu chuẩn.');
+
+      if (adviceEl) {
+        adviceEl.innerText = `${shapeNote} ${sportTips[sport] || ''}`;
+      }
+
+      const matchingCount = products.filter(p =>
+        (p.status === 'available' || p.status === 'negotiating') &&
+        !isProductExpired14Days(p) &&
+        !isPhoneBanned(p.sellerPhone) &&
+        String(p.size).replace(/\D/g, '') === sgRecommendedSize &&
+        (!sport || p.category === sport)
+      ).length;
+
+      if (stockEl) {
+        stockEl.innerText = matchingCount > 0
+          ? `Hiện có ${matchingCount} đôi ${sport} size ${sgRecommendedSize} đang mở trên sàn!`
+          : `Hiện chưa có đôi ${sport} size ${sgRecommendedSize} mở bán — bạn có thể lọc toàn bộ môn size ${sgRecommendedSize} hoặc đăng ký Săn Size.`;
+      }
+    }
+
+    function applyRecommendedSizeToMarket() {
+      const sport = document.getElementById('sgSportInput')?.value || 'ALL';
+      switchTab('market');
+      if (sport && sport !== 'ALL') {
+        setCategoryFilter(sport);
+      }
+      setSizeFilter(sgRecommendedSize);
+      closeSizeGuideModal();
+      document.getElementById('marketGrid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function normalizeAreaText(text) {
+      return String(text || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/đ/g, "d")
+        .replace(/Đ/g, "D")
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function expandSearchQuery(normalizedQuery) {
+      if (!normalizedQuery) return [];
+      const q = normalizedQuery.trim();
+      const compact = q.replace(/\s+/g, '');
+      const variants = new Set([q, compact]);
+
+      if (compact === 'bmt' || q.includes('buon ma thuot') || compact.includes('buonmathuot')) {
+        variants.add('bmt');
+        variants.add('buon ma thuot');
+        variants.add('buonmathuot');
+      }
+
+      return Array.from(variants).filter(Boolean);
+    }
+
+    function getCanonicalLocationKey(rawLoc) {
+      const compact = normalizeAreaText(rawLoc).replace(/\s+/g, '');
+      if (!compact) return "";
+      if (compact === "bmt" || compact.includes("buonmathuot")) return "buonmathuot";
+      return compact;
+    }
+
+    function getCanonicalLocationLabel(rawLoc) {
+      const key = getCanonicalLocationKey(rawLoc);
+      if (key === "buonmathuot") return "Buôn Ma Thuột";
+      return String(rawLoc || "").trim();
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function extractBlacklistPhone(entry) {
+      if (!entry) return "";
+      if (typeof entry === "string" || typeof entry === "number") {
+        return normalizePhone(String(entry));
+      }
+      if (typeof entry === "object") {
+        return normalizePhone(entry.phone || entry.sdt || entry.number || "");
+      }
+      return "";
+    }
+
     function isAdminSession() {
-      return String(activePhone || "").replace(/\D/g, "") === ADMIN_CODE;
+      const topInput = String(document.getElementById('userPhoneInput')?.value || "").replace(/\D/g, "");
+      const saved = String(activePhone || "").replace(/\D/g, "");
+      return topInput === ADMIN_CODE || saved === ADMIN_CODE;
+    }
+
+    function canDeleteAlertItem(alertItem) {
+      const viewerNorm = getCurrentViewerPhone();
+      if (!viewerNorm) return false;
+      if (viewerNorm === ADMIN_CODE || viewerNorm === ALERT_OWNER_OVERRIDE_PHONE) return true;
+      return normalizePhone(alertItem?.phone) === viewerNorm;
     }
 
     function isPhoneBanned(phone) {
       const norm = normalizePhone(phone);
-      if (!norm) return false;
-      const bannedSet = new Set(blacklist.map(b => normalizePhone(b)));
+      if (!norm || norm === ADMIN_CODE) return false;
+      const bannedSet = new Set(blacklist.map(b => extractBlacklistPhone(b)).filter(Boolean));
       return bannedSet.has(norm);
+    }
+
+    function findAnyBannedPhone(...candidates) {
+      const all = [
+        ...candidates,
+        document.getElementById('userPhoneInput')?.value || "",
+        activePhone || ""
+      ];
+      for (const raw of all) {
+        const norm = normalizePhone(raw);
+        if (norm && norm !== ADMIN_CODE && isPhoneBanned(norm)) {
+          return norm;
+        }
+      }
+      return "";
+    }
+
+    function checkFormBanWarning(type) {
+      if (type === 'post') {
+        const sellerVal = document.getElementById('postSellerPhone')?.value || "";
+        const blocked = findAnyBannedPhone(sellerVal);
+        const warn = document.getElementById('postBanWarning');
+        const btn = document.getElementById('btnSubmitPost');
+        if (warn) warn.classList.toggle('hidden', !blocked);
+        if (btn) btn.disabled = Boolean(blocked);
+      } else if (type === 'alert') {
+        const alertVal = document.getElementById('alertPhoneInput')?.value || "";
+        const blocked = findAnyBannedPhone(alertVal);
+        const warn = document.getElementById('alertBanWarning');
+        const btn = document.getElementById('btnSubmitAlert');
+        if (warn) warn.classList.toggle('hidden', !blocked);
+        if (btn) btn.disabled = Boolean(blocked);
+      }
+    }
+
+    function getCurrentViewerPhone() {
+      const inputVal = normalizePhone(document.getElementById('userPhoneInput')?.value || "");
+      if (inputVal) return inputVal;
+      return normalizePhone(activePhone || "");
+    }
+
+    function getAlertKey(a) {
+      return `${normalizePhone(a.phone)}|${String(a.category || '').trim()}|${String(a.size || '').trim()}`;
+    }
+
+    function maskPhoneNumber(phone) {
+      const clean = normalizePhone(phone) || String(phone || "").replace(/\D/g, "");
+      if (!clean) return "Đã ẩn bảo mật";
+      if (clean.length <= 6) return clean.slice(0, 2) + "***" + clean.slice(-1);
+      return clean.slice(0, 4) + "***" + clean.slice(-3);
+    }
+
+    function formatShortDate(val) {
+      if (!val) return "";
+      const str = String(val);
+      if (str.includes("GMT")) {
+        const d = new Date(str);
+        if (!Number.isNaN(d.getTime())) {
+          return d.toLocaleDateString('vi-VN');
+        }
+      }
+      return str;
     }
 
     function setCloudStatus(state, text) {
@@ -544,6 +1009,8 @@
       renderAlerts();
       renderMyShoes();
       checkAdminLock();
+      checkFormBanWarning('post');
+      checkFormBanWarning('alert');
       syncWithCloud(false);
 
       const shoeId = new URLSearchParams(window.location.search).get('id');
@@ -557,12 +1024,18 @@
       let digits = String(phone || "").replace(/\D/g, "");
       if (!digits) return "";
       if (digits === ADMIN_CODE) return ADMIN_CODE;
-      if (digits.startsWith("84") && digits.length >= 10 && digits.length <= 11) {
+      if (digits.startsWith("84") && digits.length === 11) {
         digits = "0" + digits.slice(2);
-      } else if (!digits.startsWith("0") && digits.length === 9) {
-        digits = "0" + digits;
       }
       return digits;
+    }
+
+    function isValidVnPhone10(phone) {
+      const digits = normalizePhone(phone);
+      if (!/^0(3|5|7|8|9)\d{8}$/.test(digits)) return false;
+      if (/^0\d(\d)\1{7}$/.test(digits)) return false;
+      if (digits === "0123456789" || digits === "0987654321") return false;
+      return true;
     }
 
     function calcFee10(price) {
@@ -575,21 +1048,41 @@
 
     function updateUserPhone(val) {
       const cleaned = normalizePhone(val);
-      if (cleaned && cleaned !== ADMIN_CODE && isPhoneBanned(cleaned)) {
-        alert('SĐT này đã bị khóa do vi phạm quy định sàn! Bạn không thể đăng tin, giữ chỗ hoặc săn size.');
+      if (cleaned && cleaned !== ADMIN_CODE && !isValidVnPhone10(cleaned)) {
+        alert('Vui lòng nhập đúng số điện thoại di động 10 số hợp lệ (VD: 09xxxxxxxx)!');
+        document.getElementById('userPhoneInput').value = activePhone || "";
+        return;
       }
       activePhone = cleaned;
       localStorage.setItem('giayluot_user_phone', activePhone);
+      if (cleaned && cleaned !== ADMIN_CODE && isPhoneBanned(cleaned)) {
+        alert(`SĐT ${cleaned} đã bị khóa do vi phạm quy định sàn! Không thể đăng tin, giữ chỗ hoặc săn size.`);
+      }
       if (activePhone && !isAdminSession()) {
         document.getElementById('postSellerPhone').value = activePhone;
       }
       checkAdminLock();
+      checkFormBanWarning('post');
+      checkFormBanWarning('alert');
       renderMarket();
       renderMyShoes();
+      renderAlerts();
+      if (currentDetailId && !document.getElementById('detailModal').classList.contains('hidden')) {
+        openDetailModal(currentDetailId);
+      }
     }
 
     function savePhoneFromInput() {
-      updateUserPhone(document.getElementById('userPhoneInput').value);
+      const rawInput = document.getElementById('userPhoneInput').value;
+      const cleaned = normalizePhone(rawInput);
+      if (cleaned && cleaned !== ADMIN_CODE && !isValidVnPhone10(cleaned)) {
+        alert('Số điện thoại không hợp lệ! Vui lòng nhập đúng 10 số di động (đầu 03, 05, 07, 08, 09).');
+        return;
+      }
+      updateUserPhone(cleaned);
+      if (cleaned && cleaned !== ADMIN_CODE && isPhoneBanned(cleaned)) {
+        return;
+      }
       alert(isAdminSession() ? 'Đã xác nhận quyền Quản Trị Viên!' : 'Đã lưu SĐT: ' + (activePhone || 'Trống'));
     }
 
@@ -597,10 +1090,16 @@
       try {
         const cachedProd = localStorage.getItem('giayluot_cache_products');
         if (cachedProd) products = JSON.parse(cachedProd);
+        const cachedDeletedProd = localStorage.getItem('giayluot_deleted_product_ids');
+        if (cachedDeletedProd) deletedProductIds = JSON.parse(cachedDeletedProd);
         const cachedAlerts = localStorage.getItem('giayluot_cache_alerts');
         if (cachedAlerts) alerts = JSON.parse(cachedAlerts);
+        const cachedDeletedKeys = localStorage.getItem('giayluot_deleted_alert_keys');
+        if (cachedDeletedKeys) deletedAlertKeys = JSON.parse(cachedDeletedKeys);
         const cachedBlack = localStorage.getItem('giayluot_cache_blacklist');
-        if (cachedBlack) blacklist = JSON.parse(cachedBlack);
+        if (cachedBlack) {
+          blacklist = JSON.parse(cachedBlack).map(b => extractBlacklistPhone(b)).filter(Boolean);
+        }
       } catch (e) {
         console.error("Local cache parse error", e);
       }
@@ -608,18 +1107,36 @@
 
     function saveLocalCache() {
       localStorage.setItem('giayluot_cache_products', JSON.stringify(products));
+      localStorage.setItem('giayluot_deleted_product_ids', JSON.stringify(deletedProductIds));
       localStorage.setItem('giayluot_cache_alerts', JSON.stringify(alerts));
+      localStorage.setItem('giayluot_deleted_alert_keys', JSON.stringify(deletedAlertKeys));
       localStorage.setItem('giayluot_cache_blacklist', JSON.stringify(blacklist));
     }
 
+    function openPostTabGuarded() {
+      const blocked = findAnyBannedPhone(document.getElementById('postSellerPhone')?.value || "");
+      if (blocked) {
+        alert(`SĐT ${blocked} đang bị khóa trên sàn, không thể đăng tin mới!`);
+        return;
+      }
+      switchTab('post');
+    }
+
     function switchTab(tabId) {
+      if (tabId === 'post') {
+        const blocked = findAnyBannedPhone(document.getElementById('postSellerPhone')?.value || "");
+        if (blocked) {
+          alert(`SĐT ${blocked} đang bị khóa trên sàn, không thể đăng tin mới!`);
+          return;
+        }
+      }
+
       ['market', 'post', 'alerts', 'my-shoes', 'admin'].forEach(t => {
         document.getElementById(`sec-${t}`).classList.add('hidden');
         const btn = document.getElementById(`tab-${t}`);
-        if (btn) {
-          btn.classList.remove('border-orange-500', 'text-orange-400');
-          btn.classList.add('border-transparent', 'text-slate-400');
-        }
+        if (!btn) return;
+        btn.classList.remove('border-orange-500', 'text-orange-400');
+        btn.classList.add('border-transparent', 'text-slate-400');
       });
 
       document.getElementById(`sec-${tabId}`).classList.remove('hidden');
@@ -662,35 +1179,58 @@
         }
 
         if (data && data.status === 'ok') {
-          if (Array.isArray(data.products)) {
-            products = data.products.map(p => ({
-              id: String(p.id || ''),
-              title: String(p.name || p.title || ''),
-              category: String(p.category || 'Bóng đá'),
-              size: String(p.size || ''),
-              condition: String(p.condition || '90%'),
-              price: Number(p.price || 0),
-              location: String(p.location || 'Buôn Ma Thuột'),
-              sellerPhone: normalizePhone(p.sellerPhone),
-              status: String(p.status || 'available').trim().toLowerCase(),
-              description: String(p.note || p.description || ''),
-              photo1: p.photo1 || p.photo || '',
-              photo2: p.photo2 || '',
-              createdAt: p.createdAt || new Date().toLocaleDateString('vi-VN'),
-              lockedUntil: p.lockedUntil ? Number(p.lockedUntil) : null,
-              buyerPhone: normalizePhone(p.buyerPhone)
-            }));
+          if (Array.isArray(data.blacklist)) {
+            const remoteBlack = data.blacklist.map(b => extractBlacklistPhone(b)).filter(Boolean);
+            blacklist = Array.from(new Set([...blacklist.map(b => extractBlacklistPhone(b)).filter(Boolean), ...remoteBlack]));
           }
 
-          if (Array.isArray(data.blacklist)) {
-            const remoteBlack = data.blacklist.map(b => normalizePhone(b)).filter(Boolean);
-            blacklist = Array.from(new Set([...blacklist.map(b => normalizePhone(b)), ...remoteBlack]));
+          const deletedProdSet = new Set(deletedProductIds.map(id => String(id)));
+          if (Array.isArray(data.products)) {
+            products = data.products
+              .map(p => ({
+                id: String(p.id || ''),
+                title: String(p.name || p.title || ''),
+                category: String(p.category || 'Bóng đá'),
+                size: String(p.size || ''),
+                condition: String(p.condition || '90%'),
+                price: Number(p.price || 0),
+                location: String(p.location || 'Buôn Ma Thuột'),
+                sellerPhone: normalizePhone(p.sellerPhone),
+                status: String(p.status || 'available').trim().toLowerCase(),
+                description: String(p.note || p.description || ''),
+                photo1: p.photo1 || p.photo || '',
+                photo2: p.photo2 || '',
+                createdAt: p.createdAt || new Date().toLocaleDateString('vi-VN'),
+                lockedUntil: p.lockedUntil ? Number(p.lockedUntil) : null,
+                buyerPhone: normalizePhone(p.buyerPhone)
+              }))
+              .filter(p => p.status !== 'deleted' && !deletedProdSet.has(p.id) && !isPhoneBanned(p.sellerPhone));
           }
-          if (Array.isArray(data.alerts)) alerts = data.alerts;
+
+          if (Array.isArray(data.alerts)) {
+            const deletedSet = new Set(deletedAlertKeys);
+            alerts = data.alerts
+              .map((a, idx) => {
+                const phoneNorm = normalizePhone(a.phone);
+                const cat = String(a.category || 'Bóng đá').trim();
+                const sz = String(a.size || '').trim();
+                return {
+                  id: String(a.id || `ALT-REMOTE-${idx}-${phoneNorm}-${cat}-${sz}`),
+                  phone: phoneNorm,
+                  category: cat,
+                  size: sz,
+                  createdAt: a.createdAt || ''
+                };
+              })
+              .filter(a => !deletedSet.has(getAlertKey(a)) && !isPhoneBanned(a.phone));
+          }
+
           if (Array.isArray(data.logs)) logs = data.logs;
 
           saveLocalCache();
           checkExpiredLocks();
+          checkFormBanWarning('post');
+          checkFormBanWarning('alert');
           renderMarket();
           renderAlerts();
           renderMyShoes();
@@ -698,7 +1238,7 @@
           setCloudStatus('ok', 'Đã nối Google Sheets');
 
           if (isManual) {
-            const availCount = products.filter(x => x.status === 'available' || x.status === 'negotiating').length;
+            const availCount = products.filter(x => (x.status === 'available' || x.status === 'negotiating') && !isProductExpired14Days(x)).length;
             alert(`Đã đồng bộ thành công từ Google Sheets (${availCount} tin đang mở / tổng ${products.length} tin).`);
           }
         } else {
@@ -714,7 +1254,7 @@
       }
     }
 
-    async function postToCloud(payload) {
+    async function postToCloud(payload, skipAutoSync = false) {
       const urlToUse = (currentScriptUrl && currentScriptUrl.startsWith('https://'))
         ? currentScriptUrl.trim()
         : DEFAULT_SCRIPT_URL;
@@ -733,7 +1273,9 @@
             body: jsonStr
           });
         }
-        setTimeout(() => syncWithCloud(false), 1800);
+        if (!skipAutoSync) {
+          setTimeout(() => syncWithCloud(false), 1800);
+        }
       } catch (e) {
         console.error("POST cloud error", e);
         setCloudStatus('err', 'Lỗi gửi dữ liệu');
@@ -758,6 +1300,41 @@
         renderMarket();
         renderMyShoes();
       }
+    }
+
+    function buildShoeCardHtml(p) {
+      const isReserved = p.status === 'negotiating';
+      const isSold = p.status === 'sold';
+      const isExpired = isProductExpired14Days(p);
+      const img = p.photo1 || 'https://placehold.co/600x450/1e293b/94a3b8?text=GIAY+LUOT+BMT';
+      let statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500 text-white shadow">Đang bán</span>`;
+      if (isSold) statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-600 text-white shadow">Đã bán</span>`;
+      else if (isExpired) statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-700 text-amber-300 border border-amber-500/40 shadow">Ẩn quá 14 ngày</span>`;
+      else if (isReserved) statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500 text-white shadow">Giữ chỗ 90p</span>`;
+
+      return `
+        <div onclick="openDetailModal('${p.id}')" class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden hover:border-orange-500/70 hover:shadow-xl transition cursor-pointer flex flex-col justify-between group">
+          <div class="relative w-full h-48 bg-slate-800 overflow-hidden">
+            <img src="${img}" alt="${escapeHtml(p.title)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+            <div class="absolute top-2.5 left-2.5">${statusBadge}</div>
+            <span class="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-slate-950/90 border border-slate-700 text-white">EU ${escapeHtml(p.size)}</span>
+          </div>
+          <div class="p-3.5 space-y-2 flex-grow flex flex-col justify-between">
+            <div>
+              <p class="text-[10px] font-extrabold uppercase tracking-wider text-orange-400">${escapeHtml(p.category)}</p>
+              <h3 class="font-extrabold text-sm text-white line-clamp-1 mt-0.5">${escapeHtml(p.title)}</h3>
+              <p class="text-[11px] text-slate-400 mt-0.5"><i class="fa-solid fa-location-dot text-orange-400 mr-1"></i>${escapeHtml(p.location)} • ${escapeHtml(p.condition)}</p>
+            </div>
+            <div class="pt-2.5 border-t border-slate-800 flex items-center justify-between">
+              <div>
+                <span class="block text-[10px] text-slate-500">Giá bán</span>
+                <span class="text-sm font-black text-orange-400">${formatVND(p.price)}</span>
+              </div>
+              <span class="text-xs font-bold text-slate-400 group-hover:text-orange-400">Xem tin →</span>
+            </div>
+          </div>
+        </div>
+      `;
     }
 
     function setCategoryFilter(cat) {
@@ -788,29 +1365,106 @@
       renderMarket();
     }
 
+    function setLocationFilter(locNorm) {
+      selectedLocationNorm = locNorm;
+      renderMarket();
+    }
+
+    function renderDynamicLocationBar(baseProducts) {
+      const bar = document.getElementById('dynamicLocationBar');
+      if (!bar) return;
+
+      const areaMap = new Map();
+      baseProducts.forEach(p => {
+        const key = getCanonicalLocationKey(p.location);
+        if (!key) return;
+        const candidateLabel = getCanonicalLocationLabel(p.location);
+        if (!areaMap.has(key)) {
+          areaMap.set(key, { key, label: candidateLabel, count: 1 });
+        } else {
+          const existing = areaMap.get(key);
+          existing.count += 1;
+          if (candidateLabel.length > existing.label.length) {
+            existing.label = candidateLabel;
+          }
+        }
+      });
+
+      if (selectedLocationNorm !== 'ALL' && !areaMap.has(selectedLocationNorm)) {
+        selectedLocationNorm = 'ALL';
+      }
+
+      const items = Array.from(areaMap.values());
+      if (items.length === 0) {
+        bar.innerHTML = '';
+        bar.classList.add('hidden');
+        return;
+      }
+
+      bar.classList.remove('hidden');
+      const allActive = selectedLocationNorm === 'ALL';
+      let html = `<span class="text-[11px] font-bold text-slate-400 uppercase mr-1 whitespace-nowrap">KHU VỰC:</span>`;
+      html += `<button onclick="setLocationFilter('ALL')" class="px-2.5 py-1 rounded-full text-[11px] whitespace-nowrap transition ${
+        allActive
+          ? 'bg-orange-500 text-white font-bold'
+          : 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-orange-500/50 font-semibold'
+      }">Tất cả (${baseProducts.length})</button>`;
+
+      items.forEach(item => {
+        const isAct = selectedLocationNorm === item.key;
+        const safeKey = item.key.replace(/'/g, "\\'");
+        html += `<button onclick="setLocationFilter('${safeKey}')" class="px-2.5 py-1 rounded-full text-[11px] whitespace-nowrap transition ${
+          isAct
+            ? 'bg-orange-500 text-white font-bold'
+            : 'bg-slate-800 border border-slate-700 text-slate-300 hover:border-orange-500/50 font-semibold'
+        }">📍 ${escapeHtml(item.label)} (${item.count})</button>`;
+      });
+
+      bar.innerHTML = html;
+    }
+
+    function resetAllFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('statusFilter').value = 'ALL';
+      selectedCategory = 'ALL';
+      selectedSize = 'ALL';
+      selectedLocationNorm = 'ALL';
+      setCategoryFilter('ALL');
+      setSizeFilter('ALL');
+    }
+
     function renderMarket() {
       const grid = document.getElementById('marketGrid');
       const emptyState = document.getElementById('emptyState');
-      const search = document.getElementById('searchInput').value.toLowerCase().trim();
+      const search = normalizeAreaText(document.getElementById('searchInput').value);
+      const searchVariants = expandSearchQuery(search);
       const statusFilter = document.getElementById('statusFilter').value;
+      const deletedSet = new Set(deletedProductIds.map(id => String(id)));
 
-      const visibleProducts = products.filter(p => {
-        if (p.status === 'banned') return false;
+      const statusBaseProducts = products.filter(p => {
+        if (p.status === 'banned' || p.status === 'deleted' || deletedSet.has(String(p.id))) return false;
         if (isPhoneBanned(p.sellerPhone)) return false;
+        if (isProductExpired14Days(p)) return false;
         if (statusFilter === 'ALL' && p.status === 'sold') return false;
         if (statusFilter === 'available' && p.status !== 'available') return false;
         if (statusFilter === 'negotiating' && p.status !== 'negotiating') return false;
         if (statusFilter === 'sold' && p.status !== 'sold') return false;
+        return true;
+      });
 
-        if (
-          search &&
-          !p.title.toLowerCase().includes(search) &&
-          !p.category.toLowerCase().includes(search) &&
-          !p.location.toLowerCase().includes(search)
-        ) return false;
+      renderDynamicLocationBar(statusBaseProducts);
+
+      const visibleProducts = statusBaseProducts.filter(p => {
+        const searchableBlob = normalizeAreaText(`${p.title} ${p.category} ${p.location} ${p.condition} ${p.description}`);
+        const compactBlob = searchableBlob.replace(/\s+/g, '');
+        if (searchVariants.length > 0) {
+          const matched = searchVariants.some(v => searchableBlob.includes(v) || compactBlob.includes(v.replace(/\s+/g, '')));
+          if (!matched) return false;
+        }
 
         if (selectedCategory !== 'ALL' && p.category !== selectedCategory) return false;
         if (selectedSize !== 'ALL' && String(p.size).replace(/\D/g, '') !== String(selectedSize)) return false;
+        if (selectedLocationNorm !== 'ALL' && getCanonicalLocationKey(p.location) !== selectedLocationNorm) return false;
         return true;
       });
 
@@ -822,92 +1476,160 @@
       }
 
       emptyState.classList.add('hidden');
-      grid.innerHTML = visibleProducts.map(p => {
-        const isReserved = p.status === 'negotiating';
-        const isSold = p.status === 'sold';
-        const img = p.photo1 || 'https://placehold.co/400x300/1e293b/94a3b8?text=GIAY+LUOT+BMT';
-        let statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500 text-white shadow">Đang bán</span>`;
-        if (isReserved) statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500 text-white shadow">Giữ chỗ 90p</span>`;
-        else if (isSold) statusBadge = `<span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-600 text-white shadow">Đã bán</span>`;
-
-        return `
-          <div onclick="openDetailModal('${p.id}')" class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden hover:border-orange-500/70 hover:shadow-xl transition cursor-pointer flex flex-col justify-between group">
-            <div class="relative w-full h-48 bg-slate-800 overflow-hidden">
-              <img src="${img}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
-              <div class="absolute top-2.5 left-2.5">${statusBadge}</div>
-              <span class="absolute bottom-2.5 right-2.5 px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-slate-950/90 border border-slate-700 text-white">EU ${p.size}</span>
-            </div>
-            <div class="p-3.5 space-y-2 flex-grow flex flex-col justify-between">
-              <div>
-                <p class="text-[10px] font-extrabold uppercase tracking-wider text-orange-400">${p.category}</p>
-                <h3 class="font-extrabold text-sm text-white line-clamp-1 mt-0.5">${p.title}</h3>
-                <p class="text-[11px] text-slate-400 mt-0.5"><i class="fa-solid fa-location-dot text-orange-400 mr-1"></i>${p.location} • ${p.condition}</p>
-              </div>
-              <div class="pt-2.5 border-t border-slate-800 flex items-center justify-between">
-                <div>
-                  <span class="block text-[10px] text-slate-500">Giá pass</span>
-                  <span class="text-sm font-black text-orange-400">${formatVND(p.price)}</span>
-                </div>
-                <span class="text-xs font-bold text-slate-400 group-hover:text-orange-400">Xem tin →</span>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
+      grid.innerHTML = visibleProducts.map(buildShoeCardHtml).join('');
     }
 
     function openDetailModal(id) {
-      const p = products.find(x => x.id === id);
+      const p = products.find(x => x.id === id && x.status !== 'deleted');
       if (!p) return;
       currentDetailId = id;
       const modal = document.getElementById('detailModal');
       const mainImg = document.getElementById('modalMainImg');
       const thumbBox = document.getElementById('modalThumbnails');
-      mainImg.src = p.photo1 || 'https://placehold.co/400x300/1e293b/94a3b8?text=GIAY+LUOT+BMT';
+      mainImg.src = p.photo1 || 'https://placehold.co/600x450/1e293b/94a3b8?text=GIAY+LUOT+BMT';
       thumbBox.innerHTML = '';
       if (p.photo1) thumbBox.innerHTML += `<img src="${p.photo1}" onclick="document.getElementById('modalMainImg').src='${p.photo1}'" class="w-11 h-11 rounded-lg object-cover cursor-pointer border-2 border-slate-900 shadow">`;
       if (p.photo2) thumbBox.innerHTML += `<img src="${p.photo2}" onclick="document.getElementById('modalMainImg').src='${p.photo2}'" class="w-11 h-11 rounded-lg object-cover cursor-pointer border-2 border-slate-900 shadow">`;
 
+      const viewerNorm = getCurrentViewerPhone();
+      const hasLoggedInPhone = Boolean(viewerNorm && viewerNorm !== ADMIN_CODE && isValidVnPhone10(viewerNorm));
+      const isAdmin = isAdminSession();
+      const isSeller = Boolean(viewerNorm && !isAdmin && normalizePhone(p.sellerPhone) === viewerNorm);
+      const isCurrentBuyer = Boolean(viewerNorm && normalizePhone(p.buyerPhone) === viewerNorm);
+      const isReserved = p.status === 'negotiating';
+      const isExpired = isProductExpired14Days(p);
+
+      const canUnlockContact = Boolean(
+        isAdmin ||
+        isSeller ||
+        (hasLoggedInPhone && isReserved && isCurrentBuyer)
+      );
+
       document.getElementById('modalCat').innerText = p.category;
       document.getElementById('modalTitle').innerText = p.title;
-      document.getElementById('modalPrice').innerText = formatVND(p.price);
       document.getElementById('modalSize').innerText = p.size;
       document.getElementById('modalCond').innerText = p.condition;
       document.getElementById('modalLoc').innerText = p.location;
-      document.getElementById('modalSeller').innerText = p.sellerPhone || 'Chưa có SĐT';
+      document.getElementById('modalSeller').innerText = canUnlockContact
+        ? (p.sellerPhone || 'Chưa có SĐT')
+        : maskPhoneNumber(p.sellerPhone);
       document.getElementById('modalNote').innerText = p.description ? `Ghi chú: ${p.description}` : 'Không có ghi chú thêm.';
+      document.getElementById('modalPrice').innerText = formatVND(p.price);
 
       const statusBadge = document.getElementById('modalStatusBadge');
-      if (p.status === 'negotiating') {
-        statusBadge.className = "absolute top-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-amber-500 text-white shadow";
-        statusBadge.innerText = "Giữ chỗ 90 phút";
-      } else if (p.status === 'sold') {
+      if (p.status === 'sold') {
         statusBadge.className = "absolute top-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-rose-600 text-white shadow";
         statusBadge.innerText = "Đã bán";
+      } else if (isExpired) {
+        statusBadge.className = "absolute top-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-slate-700 text-amber-300 border border-amber-500/40 shadow";
+        statusBadge.innerText = "Đã ẩn quá 14 ngày";
+      } else if (isReserved) {
+        statusBadge.className = "absolute top-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-amber-500 text-white shadow";
+        statusBadge.innerText = "Giữ chỗ 90 phút";
       } else {
         statusBadge.className = "absolute top-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-emerald-500 text-white shadow";
         statusBadge.innerText = "Đang bán";
       }
 
-      document.getElementById('btnCallSeller').href = p.sellerPhone ? `tel:${p.sellerPhone}` : '#';
-      document.getElementById('btnZaloSeller').href = p.sellerPhone ? `https://zalo.me/${p.sellerPhone}` : '#';
+      const hintEl = document.getElementById('contactUnlockHint');
+      if (hintEl) {
+        if (isExpired) {
+          hintEl.className = "text-[11px] text-amber-300 bg-amber-500/10 border border-amber-500/30 rounded-xl px-3 py-2";
+          hintEl.innerHTML = `<i class="fa-solid fa-clock-rotate-left mr-1"></i> Tin này đã quá 14 ngày nên đang tự ẩn khỏi sàn. Nếu vẫn còn giày, chủ tin bấm <strong>Mở Bán Lại</strong> bên dưới để hiển thị tiếp 14 ngày.`;
+        } else if (canUnlockContact) {
+          hintEl.className = "text-[11px] text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-3 py-2";
+          hintEl.innerHTML = `<i class="fa-solid fa-lock-open mr-1"></i> Đã mở liên hệ người bán. Hai bên tự thương lượng & tự thanh toán, chốt xong chuyển 10% phí sàn về SHB <strong>7772345999</strong>.`;
+        } else if (!hasLoggedInPhone) {
+          hintEl.className = "text-[11px] text-amber-300/90 bg-amber-500/10 border border-amber-500/25 rounded-xl px-3 py-2";
+          hintEl.innerHTML = `<i class="fa-solid fa-shield-halved mr-1"></i> Số người bán đang ẩn. Nhập SĐT 10 số của bạn ở thanh trên và bấm <strong>Giữ Chỗ 90 Phút</strong> để hiện Gọi Điện / Zalo.`;
+        } else if (isReserved && !isCurrentBuyer) {
+          hintEl.className = "text-[11px] text-amber-300/90 bg-amber-500/10 border border-amber-500/25 rounded-xl px-3 py-2";
+          hintEl.innerHTML = `<i class="fa-solid fa-hourglass-half mr-1"></i> Đôi này đang được khách khác giữ chỗ 90 phút. Liên hệ người bán tạm khóa để tránh gián đoạn kèo.`;
+        } else {
+          hintEl.className = "text-[11px] text-amber-300/90 bg-amber-500/10 border border-amber-500/25 rounded-xl px-3 py-2";
+          hintEl.innerHTML = `<i class="fa-solid fa-lock mr-1"></i> Bạn đã lưu SĐT <strong>${viewerNorm}</strong>. Bấm <strong>Giữ Chỗ 90 Phút</strong> để mở SĐT và nút Gọi Điện / Zalo người bán.`;
+        }
+      }
+
+      const callBtn = document.getElementById('btnCallSeller');
+      const zaloBtn = document.getElementById('btnZaloSeller');
+
+      if (canUnlockContact) {
+        callBtn.classList.remove('opacity-45', 'cursor-not-allowed');
+        callBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+        callBtn.innerHTML = `<i class="fa-solid fa-phone mr-1"></i> Gọi Điện`;
+
+        zaloBtn.classList.remove('opacity-45', 'cursor-not-allowed');
+        zaloBtn.classList.add('bg-sky-600', 'hover:bg-sky-700');
+        zaloBtn.innerHTML = `<i class="fa-solid fa-comment-dots mr-1"></i> Zalo`;
+      } else {
+        callBtn.classList.add('opacity-45', 'cursor-not-allowed');
+        callBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
+        callBtn.innerHTML = `<i class="fa-solid fa-lock mr-1"></i> Gọi Điện`;
+
+        zaloBtn.classList.add('opacity-45', 'cursor-not-allowed');
+        zaloBtn.classList.remove('bg-sky-600', 'hover:bg-sky-700');
+        zaloBtn.innerHTML = `<i class="fa-solid fa-lock mr-1"></i> Zalo`;
+      }
 
       const timerBox = document.getElementById('modalTimerBox');
       const reserveBtn = document.getElementById('btnReserveAction');
-      if (p.status === 'negotiating' && p.lockedUntil) {
+      if (isReserved && p.lockedUntil && !isExpired) {
         timerBox.classList.remove('hidden');
-        document.getElementById('modalBuyerPhone').innerText = p.buyerPhone || 'Đang ẩn';
+        document.getElementById('modalBuyerPhone').innerText = (isAdmin || isCurrentBuyer || isSeller)
+          ? (p.buyerPhone || 'Đang ẩn')
+          : maskPhoneNumber(p.buyerPhone);
         reserveBtn.classList.add('hidden');
         startCountdown(p.lockedUntil);
       } else {
         timerBox.classList.add('hidden');
-        reserveBtn.classList.toggle('hidden', p.status === 'sold');
+        reserveBtn.classList.toggle('hidden', p.status === 'sold' || isExpired);
         if (timerInterval) clearInterval(timerInterval);
       }
 
-      const isSeller = activePhone && !isAdminSession() && (normalizePhone(activePhone) === normalizePhone(p.sellerPhone));
-      document.getElementById('sellerAdminControls').classList.toggle('hidden', !(isSeller || isAdminSession()));
+      const delBtn = document.getElementById('btnDeleteProduct');
+      if (delBtn) {
+        delBtn.innerHTML = p.status === 'sold'
+          ? `<i class="fa-solid fa-trash-can mr-1"></i> Xóa Tin`
+          : `<i class="fa-solid fa-trash-can mr-1"></i> Gỡ Tin`;
+      }
+
+      document.getElementById('sellerAdminControls').classList.toggle('hidden', !(isSeller || isAdmin));
       modal.classList.remove('hidden');
+    }
+
+    function handleContactAction(type) {
+      const p = products.find(x => x.id === currentDetailId);
+      if (!p) return;
+
+      const viewerNorm = getCurrentViewerPhone();
+      const hasLoggedInPhone = Boolean(viewerNorm && viewerNorm !== ADMIN_CODE && isValidVnPhone10(viewerNorm));
+      const isAdmin = isAdminSession();
+      const isSeller = Boolean(viewerNorm && !isAdmin && normalizePhone(p.sellerPhone) === viewerNorm);
+      const isCurrentBuyer = Boolean(viewerNorm && normalizePhone(p.buyerPhone) === viewerNorm);
+      const isReserved = p.status === 'negotiating';
+
+      if (!isAdmin && !isSeller) {
+        if (!hasLoggedInPhone) {
+          alert('Vui lòng nhập và lưu SĐT 10 số của bạn ở thanh trên cùng, sau đó bấm "Giữ Chỗ 90 Phút" để mở liên hệ người bán.');
+          return;
+        }
+        if (!isReserved || !isCurrentBuyer) {
+          alert('Bạn cần bấm "Giữ Chỗ 90 Phút" trên đôi giày này trước để hệ thống mở khóa SĐT / Zalo người bán.');
+          return;
+        }
+      }
+
+      if (!p.sellerPhone) {
+        alert('Tin đăng chưa có SĐT người bán.');
+        return;
+      }
+
+      if (type === 'call') {
+        window.location.href = `tel:${p.sellerPhone}`;
+      } else if (type === 'zalo') {
+        window.open(`https://zalo.me/${p.sellerPhone}`, '_blank', 'noopener,noreferrer');
+      }
     }
 
     function closeDetailModal() {
@@ -934,34 +1656,44 @@
     }
 
     async function reserveCurrentProduct() {
-      if (isPhoneBanned(activePhone)) {
-        alert('SĐT của bạn đang bị khóa trên sàn, không thể giữ chỗ!');
+      const blockedBefore = findAnyBannedPhone();
+      if (blockedBefore) {
+        alert(`SĐT ${blockedBefore} đang bị khóa trên sàn, không thể giữ chỗ!`);
         return;
       }
-      if (!activePhone || isAdminSession()) {
-        const phone = prompt("Nhập SĐT của bạn để giữ chỗ 90 phút:");
+
+      let buyerPhone = getCurrentViewerPhone();
+      if (!buyerPhone || buyerPhone === ADMIN_CODE || !isValidVnPhone10(buyerPhone)) {
+        const phone = prompt("Nhập SĐT di động 10 số của bạn để giữ chỗ 90 phút và mở liên hệ người bán:");
         if (!phone) return;
         const norm = normalizePhone(phone);
-        if (!norm || norm === ADMIN_CODE) {
-          alert('Vui lòng nhập số điện thoại hợp lệ!');
+        if (!isValidVnPhone10(norm)) {
+          alert('Số điện thoại không hợp lệ! Vui lòng nhập đúng 10 số di động Việt Nam (VD: 09xxxxxxxx).');
           return;
         }
         if (isPhoneBanned(norm)) {
-          alert('SĐT này đang bị khóa trên sàn, không thể giữ chỗ!');
+          alert(`SĐT ${norm} đang bị khóa trên sàn, không thể giữ chỗ!`);
           return;
         }
+        document.getElementById('userPhoneInput').value = norm;
         updateUserPhone(norm);
+        buyerPhone = norm;
       }
-      if (isPhoneBanned(activePhone)) {
-        alert('SĐT này đang bị khóa trên sàn, không thể giữ chỗ!');
+
+      if (isPhoneBanned(buyerPhone)) {
+        alert(`SĐT ${buyerPhone} đang bị khóa trên sàn, không thể giữ chỗ!`);
         return;
       }
 
       const p = products.find(x => x.id === currentDetailId);
-      if (!p) return;
+      if (!p || p.status !== 'available' || isProductExpired14Days(p)) {
+        alert('Đôi giày này hiện không còn ở trạng thái mở giữ chỗ.');
+        return;
+      }
+
       p.status = 'negotiating';
       p.lockedUntil = Date.now() + (90 * 60 * 1000);
-      p.buyerPhone = activePhone;
+      p.buyerPhone = buyerPhone;
       saveLocalCache();
       renderMarket();
       renderMyShoes();
@@ -970,12 +1702,12 @@
       await postToCloud({
         action: 'CONNECT_BUYER',
         productId: p.id,
-        buyerPhone: activePhone,
+        buyerPhone: buyerPhone,
         sellerPhone: p.sellerPhone,
         price: p.price,
         productName: p.title
       });
-      alert(`Đã giữ chỗ 90 phút cho đôi: ${p.title}`);
+      alert(`Đã giữ chỗ 90 phút & mở liên hệ người bán cho đôi: ${p.title}.`);
     }
 
     function confirmSoldAndCloseQR() {
@@ -989,28 +1721,118 @@
 
     function closeVietQrModal() { document.getElementById('vietQrModal').classList.add('hidden'); }
 
-    async function finishSoldProcess() {
+    async function finishSoldProcess(deleteAfterSold = false) {
       const p = products.find(x => x.id === currentDetailId);
       if (!p) return;
-      p.status = 'sold';
+      const targetId = String(p.id);
+      const buyer = p.buyerPhone || '';
+      const seller = p.sellerPhone || '';
+      const productName = p.title || '';
+      const price = p.price || 0;
+
+      const btnDel = document.getElementById('btnConfirmSoldAndDelete');
+      const btnOnly = document.getElementById('btnConfirmSoldOnly');
+      if (btnDel) {
+        btnDel.disabled = true;
+        if (deleteAfterSold) btnDel.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Đang gửi mail & xóa tin...';
+      }
+      if (btnOnly) btnOnly.disabled = true;
+
+      try {
+        if (deleteAfterSold) {
+          if (!deletedProductIds.includes(targetId)) deletedProductIds.push(targetId);
+          products = products.filter(x => String(x.id) !== targetId);
+        } else {
+          p.status = 'sold';
+        }
+
+        saveLocalCache();
+        renderMarket();
+        renderMyShoes();
+
+        await postToCloud({
+          action: 'UPDATE_STATUS',
+          productId: targetId,
+          newStatus: 'sold',
+          buyerPhone: buyer,
+          sellerPhone: seller,
+          productName: productName,
+          price: price
+        }, deleteAfterSold);
+
+        if (deleteAfterSold) {
+          await new Promise(resolve => setTimeout(resolve, 4000));
+          await postToCloud({
+            action: 'UPDATE_STATUS',
+            productId: targetId,
+            newStatus: 'deleted',
+            buyerPhone: buyer,
+            sellerPhone: seller,
+            productName: productName,
+            price: price
+          });
+        }
+
+        closeVietQrModal();
+        closeDetailModal();
+        alert(deleteAfterSold
+          ? 'Đã xác nhận chốt bán, gửi báo cáo về mail Admin và xóa tin khỏi sàn!'
+          : 'Đã cập nhật trạng thái: Đã bán.');
+      } finally {
+        if (btnDel) {
+          btnDel.disabled = false;
+          btnDel.innerHTML = '<i class="fa-solid fa-check-double mr-1"></i> Đã Chuyển Phí & Xóa Tin Khỏi Sàn';
+        }
+        if (btnOnly) btnOnly.disabled = false;
+      }
+    }
+
+    async function triggerDeleteProduct() {
+      const p = products.find(x => x.id === currentDetailId);
+      if (!p) return;
+
+      const viewerNorm = getCurrentViewerPhone();
+      const isAdmin = isAdminSession();
+      const isSeller = Boolean(viewerNorm && !isAdmin && normalizePhone(p.sellerPhone) === viewerNorm);
+      if (!isSeller && !isAdmin) return;
+
+      const msg = p.status === 'sold'
+        ? `Xóa vĩnh viễn tin "${p.title}" khỏi sàn?`
+        : `Đôi "${p.title}" chưa đánh dấu Đã bán. Nếu đã bán qua sàn, vui lòng bấm "Đã Bán" để quét QR phí 10% trước.\n\nNếu bạn đã bán ngoài hoặc đổi ý, xác nhận gỡ tin này khỏi sàn?`;
+
+      if (!confirm(msg)) return;
+
+      const targetId = String(p.id);
+      if (!deletedProductIds.includes(targetId)) deletedProductIds.push(targetId);
+      products = products.filter(x => String(x.id) !== targetId);
+
       saveLocalCache();
-      closeVietQrModal();
       closeDetailModal();
       renderMarket();
       renderMyShoes();
-      await postToCloud({ action: 'UPDATE_STATUS', productId: p.id, newStatus: 'sold', buyerPhone: p.buyerPhone });
-      alert('Đã cập nhật trạng thái: Đã bán.');
+
+      await postToCloud({
+        action: 'UPDATE_STATUS',
+        productId: targetId,
+        newStatus: 'deleted',
+        buyerPhone: p.buyerPhone || ''
+      });
+
+      alert('Đã gỡ tin đăng khỏi sàn.');
     }
 
     async function triggerReopenProduct() {
       const p = products.find(x => x.id === currentDetailId);
-      if (!p || !confirm('Mở bán lại đôi giày này?')) return;
+      if (!p || !confirm('Mở bán lại và gia hạn hiển thị 14 ngày cho đôi giày này?')) return;
       p.status = 'available';
       p.lockedUntil = null;
       p.buyerPhone = null;
+      renewedAtMap[String(p.id)] = Date.now();
+      saveRenewedAtMap();
       saveLocalCache();
       openDetailModal(p.id);
       renderMarket();
+      renderMyShoes();
       await postToCloud({ action: 'UPDATE_STATUS', productId: p.id, newStatus: 'available' });
     }
 
@@ -1023,7 +1845,7 @@
         img.onload = function() {
           const canvas = document.createElement('canvas');
           let width = img.width, height = img.height;
-          const MAX_WIDTH = 380;
+          const MAX_WIDTH = 600;
           if (width > MAX_WIDTH) {
             height = Math.round((height * MAX_WIDTH) / width);
             width = MAX_WIDTH;
@@ -1031,7 +1853,7 @@
           canvas.width = width;
           canvas.height = height;
           canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.5);
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.68);
           if (slot === 1) {
             tempPhoto1 = compressedDataUrl;
             document.getElementById('prevPhoto1').src = compressedDataUrl;
@@ -1051,25 +1873,32 @@
 
     async function handlePostSubmit(e) {
       e.preventDefault();
-      const sellerPhone = normalizePhone(document.getElementById('postSellerPhone').value);
-      if (!sellerPhone || sellerPhone === ADMIN_CODE) {
-        alert('Vui lòng nhập SĐT người bán hợp lệ!');
+      const rawSellerInput = document.getElementById('postSellerPhone').value;
+      const sellerPhone = normalizePhone(rawSellerInput);
+      const blocked = findAnyBannedPhone(sellerPhone);
+
+      if (!isValidVnPhone10(sellerPhone)) {
+        alert('Vui lòng nhập đúng SĐT di động 10 số hợp lệ (VD: 09xxxxxxxx)!');
         return;
       }
-      if (isPhoneBanned(sellerPhone) || isPhoneBanned(activePhone)) {
-        alert('SĐT này đang bị khóa trên sàn, không thể đăng tin mới!');
+      if (blocked) {
+        alert(`SĐT ${blocked} đang bị khóa trên sàn, không thể đăng tin mới!`);
+        checkFormBanWarning('post');
         return;
       }
 
       const btn = document.getElementById('btnSubmitPost');
       if (btn) { btn.disabled = true; btn.innerText = "Đang gửi lên Google Sheets..."; }
 
+      const startPrice = Number(document.getElementById('postPrice').value);
+      const productId = "BMT-" + Date.now();
+
       const newProduct = {
-        id: "BMT-" + Date.now(),
+        id: productId,
         title: document.getElementById('postName').value.trim(),
         category: document.getElementById('postCategory').value,
         size: document.getElementById('postSize').value.trim(),
-        price: Number(document.getElementById('postPrice').value),
+        price: startPrice,
         condition: document.getElementById('postCondition').value,
         location: document.getElementById('postLocation').value.trim(),
         sellerPhone: sellerPhone,
@@ -1094,22 +1923,26 @@
         }
       });
 
-      if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-paper-plane mr-1"></i> Đăng Pass Lên Sàn'; }
+      if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-paper-plane mr-1"></i> Đăng Bán Lên Sàn'; }
       document.getElementById('postForm').reset();
+      document.getElementById('postLocation').value = "Buôn Ma Thuột";
       tempPhoto1 = ""; tempPhoto2 = "";
       document.getElementById('prevPhoto1').classList.add('hidden');
       document.getElementById('placeholder1').classList.remove('hidden');
       document.getElementById('prevPhoto2').classList.add('hidden');
       document.getElementById('placeholder2').classList.remove('hidden');
 
-      if (!isAdminSession()) updateUserPhone(sellerPhone);
-      alert('Đã đăng pass lên sàn và gửi đồng bộ Google Sheets!');
+      if (!isAdminSession()) {
+        document.getElementById('userPhoneInput').value = sellerPhone;
+        updateUserPhone(sellerPhone);
+      }
+      alert('Đã đăng bán lên sàn! Lưu ý: nếu bán được qua kênh khác, nhớ vào "Tin Của Tôi" bấm Gỡ Tin giúp sàn nhé.');
       switchTab('market');
     }
 
     function getShareableBaseUrl() {
       if (window.location.protocol === 'blob:' || window.location.protocol === 'about:' || !window.location.origin) {
-        return "https://thethaobm-collab.github.io/giayluotbmt/";
+        return "https://giayluotbmt.github.io/";
       }
       return window.location.origin + window.location.pathname;
     }
@@ -1150,11 +1983,13 @@
     }
 
     function openAddAlertModal() {
-      if (isPhoneBanned(activePhone)) {
-        alert('SĐT của bạn đang bị khóa trên sàn, không thể đăng ký săn size!');
+      const blocked = findAnyBannedPhone(document.getElementById('alertPhoneInput')?.value || "");
+      if (blocked) {
+        alert(`SĐT ${blocked} đang bị khóa trên sàn, không thể đăng ký săn size!`);
         return;
       }
       if (activePhone && !isAdminSession()) document.getElementById('alertPhoneInput').value = activePhone;
+      checkFormBanWarning('alert');
       document.getElementById('addAlertModal').classList.remove('hidden');
     }
 
@@ -1164,61 +1999,110 @@
       const phone = normalizePhone(document.getElementById('alertPhoneInput').value);
       const cat = document.getElementById('alertCatInput').value;
       const size = document.getElementById('alertSizeInput').value.trim();
-      if (!phone || phone === ADMIN_CODE || !size) {
-        alert('Vui lòng điền đủ SĐT hợp lệ và Size!');
+      const blocked = findAnyBannedPhone(phone);
+
+      if (!isValidVnPhone10(phone) || !size) {
+        alert('Vui lòng điền đúng SĐT di động 10 số hợp lệ (VD: 09xxxxxxxx) và Size!');
         return;
       }
-      if (isPhoneBanned(phone) || isPhoneBanned(activePhone)) {
-        alert('SĐT này đang bị khóa trên sàn, không thể đăng ký săn size!');
+      if (blocked) {
+        alert(`SĐT ${blocked} đang bị khóa trên sàn, không thể đăng ký săn size!`);
+        checkFormBanWarning('alert');
         return;
       }
-      const newAlert = { id: "ALT-" + Date.now(), phone, category: cat, size, createdAt: new Date().toLocaleDateString('vi-VN') };
+      const alertId = "ALT-" + Date.now();
+      const newAlert = { id: alertId, phone, category: cat, size, createdAt: new Date().toLocaleDateString('vi-VN') };
+      const key = getAlertKey(newAlert);
+      deletedAlertKeys = deletedAlertKeys.filter(k => k !== key);
       alerts.unshift(newAlert);
       saveLocalCache();
       closeAddAlertModal();
       renderAlerts();
-      await postToCloud({ action: 'ADD_ALERT', phone, category: cat, size });
-      alert('Đã lưu yêu cầu săn size!');
+      await postToCloud({ action: 'ADD_ALERT', id: alertId, phone, category: cat, size });
+      alert('Đã lưu yêu cầu săn size (ẩn hoàn toàn với người khác)!');
     }
 
-    function deleteAlert(id) {
-      alerts = alerts.filter(a => a.id !== id);
+    async function deleteAlertByIndex(idx) {
+      const visible = getVisibleAlerts();
+      const target = visible[idx];
+      if (!target || !canDeleteAlertItem(target)) return;
+
+      const targetKey = getAlertKey(target);
+      alerts = alerts.filter(a => String(a.id) !== String(target.id) && getAlertKey(a) !== targetKey);
+      if (!deletedAlertKeys.includes(targetKey)) {
+        deletedAlertKeys.push(targetKey);
+      }
       saveLocalCache();
       renderAlerts();
+      await postToCloud({
+        action: 'DELETE_ALERT',
+        id: String(target.id || ''),
+        phone: normalizePhone(target.phone),
+        category: target.category || '',
+        size: target.size || ''
+      });
+    }
+
+    function getVisibleAlerts() {
+      const isAdmin = isAdminSession();
+      const viewerNorm = getCurrentViewerPhone();
+      if (isAdmin) return alerts;
+      if (!viewerNorm) return [];
+      return alerts.filter(a => normalizePhone(a.phone) === viewerNorm);
     }
 
     function renderAlerts() {
       const list = document.getElementById('alertsList');
-      document.getElementById('badgeAlertsCount').innerText = alerts.length;
-      if (alerts.length === 0) {
+      const isAdmin = isAdminSession();
+      const viewerNorm = getCurrentViewerPhone();
+      const visible = getVisibleAlerts();
+      document.getElementById('badgeAlertsCount').innerText = visible.length;
+
+      if (!viewerNorm && !isAdmin) {
+        list.innerHTML = `<div class="text-center py-8 bg-slate-900 rounded-2xl border border-slate-800 text-slate-400 text-xs">Tin săn size được ẩn bảo mật với người khác. Nhập SĐT 10 số của bạn ở ô trên cùng để xem và quản lý tin săn size của riêng bạn.</div>`;
+        return;
+      }
+
+      if (visible.length === 0) {
         list.innerHTML = `<div class="text-center py-8 bg-slate-900 rounded-2xl border border-slate-800 text-slate-400 text-xs">Chưa có yêu cầu săn size nào. Bấm "Đăng ký săn size" để tạo mới.</div>`;
         return;
       }
-      list.innerHTML = alerts.map(a => `
-        <div class="bg-slate-900 p-3.5 rounded-2xl border border-slate-800 flex items-center justify-between gap-3 text-xs shadow-md">
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-orange-500/15 border border-orange-500/30 text-orange-400 flex items-center justify-center font-bold">
-              <i class="fa-solid fa-bell"></i>
+
+      list.innerHTML = visible.map((a, idx) => {
+        const phoneNorm = normalizePhone(a.phone);
+        const canDelete = canDeleteAlertItem(a);
+        const displayPhone = isAdmin ? (phoneNorm || 'Đang ẩn') : maskPhoneNumber(phoneNorm);
+        return `
+          <div class="bg-slate-900 p-3.5 rounded-2xl border border-slate-800 flex items-center justify-between gap-3 text-xs shadow-md">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl bg-orange-500/15 border border-orange-500/30 text-orange-400 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-bell"></i>
+              </div>
+              <div>
+                <p class="font-extrabold text-slate-100">${escapeHtml(a.category)} • Size <span class="text-orange-400 font-black">${escapeHtml(a.size)}</span></p>
+                <p class="text-[11px] text-slate-400">SĐT: ${displayPhone} • ${formatShortDate(a.createdAt)}</p>
+              </div>
             </div>
-            <div>
-              <p class="font-extrabold text-slate-100">${a.category} • Size <span class="text-orange-400 font-black">${a.size}</span></p>
-              <p class="text-[11px] text-slate-400">SĐT: ${a.phone} • ${a.createdAt || ''}</p>
-            </div>
+            ${canDelete ? `<button onclick="deleteAlertByIndex(${idx})" title="Xóa săn size" class="px-2.5 py-1.5 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-300 hover:bg-rose-600 hover:text-white font-bold transition"><i class="fa-solid fa-trash-can mr-1"></i>Xóa</button>` : `<span class="text-[10px] text-slate-500">Bảo mật</span>`}
           </div>
-          <button onclick="deleteAlert('${a.id}')" class="p-2 text-slate-500 hover:text-rose-400 transition"><i class="fa-solid fa-trash-can"></i></button>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     function renderMyShoes() {
       const grid = document.getElementById('myShoesGrid');
       document.getElementById('badgeMyCount').innerText = '0';
       if (!activePhone || isAdminSession()) {
-        grid.innerHTML = `<div class="col-span-2 text-center py-10 bg-slate-900 rounded-2xl border border-slate-800 text-xs text-slate-400 space-y-1.5"><i class="fa-solid fa-phone text-xl text-slate-600"></i><p>Nhập SĐT của bạn ở thanh trên cùng để xem tin đăng hoặc giữ chỗ.</p></div>`;
+        grid.innerHTML = `<div class="col-span-2 text-center py-10 bg-slate-900 rounded-2xl border border-slate-800 text-xs text-slate-400 space-y-1.5"><i class="fa-solid fa-phone text-xl text-slate-600"></i><p>Nhập SĐT 10 số của bạn ở thanh trên cùng để xem tin đăng hoặc giữ chỗ.</p></div>`;
         return;
       }
       const myPhoneNorm = normalizePhone(activePhone);
-      const myItems = products.filter(p => normalizePhone(p.sellerPhone) === myPhoneNorm || normalizePhone(p.buyerPhone) === myPhoneNorm);
+      const deletedSet = new Set(deletedProductIds.map(id => String(id)));
+      const myItems = products.filter(p =>
+        p.status !== 'deleted' &&
+        !deletedSet.has(String(p.id)) &&
+        (normalizePhone(p.sellerPhone) === myPhoneNorm || normalizePhone(p.buyerPhone) === myPhoneNorm)
+      );
       document.getElementById('badgeMyCount').innerText = myItems.length;
       if (myItems.length === 0) {
         grid.innerHTML = `<div class="col-span-2 text-center py-10 bg-slate-900 rounded-2xl border border-slate-800 text-xs text-slate-400">Chưa có tin đăng hoặc giữ chỗ nào gắn với SĐT <strong class="text-white">${activePhone}</strong>.</div>`;
@@ -1226,15 +2110,17 @@
       }
       grid.innerHTML = myItems.map(p => {
         const isMyPost = normalizePhone(p.sellerPhone) === myPhoneNorm;
+        const expired = isProductExpired14Days(p);
+        const statusText = expired ? 'Ẩn quá 14 ngày' : (p.status === 'sold' ? 'Đã bán' : (p.status === 'negotiating' ? 'Giữ chỗ 90p' : 'Đang bán'));
         return `
-          <div onclick="openDetailModal('${p.id}')" class="bg-slate-900 p-3 rounded-2xl border border-slate-800 flex items-center gap-3 cursor-pointer hover:border-orange-500/70 transition shadow-md">
-            <img src="${p.photo1 || 'https://placehold.co/100x100/1e293b/94a3b8?text=GIAY'}" class="w-16 h-16 rounded-xl object-cover">
+          <div onclick="openDetailModal('${p.id}')" class="bg-slate-900 p-3 rounded-2xl border ${expired ? 'border-amber-500/40' : 'border-slate-800'} flex items-center gap-3 cursor-pointer hover:border-orange-500/70 transition shadow-md">
+            <img src="${p.photo1 || 'https://placehold.co/150x150/1e293b/94a3b8?text=GIAY'}" class="w-16 h-16 rounded-xl object-cover">
             <div class="flex-grow space-y-1 text-xs">
               <div class="flex items-center justify-between">
                 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isMyPost ? 'bg-orange-500/20 text-orange-300' : 'bg-sky-500/20 text-sky-300'}">${isMyPost ? 'Tin của tôi' : 'Đang giữ chỗ'}</span>
-                <span class="text-[11px] font-semibold text-slate-400">${p.status}</span>
+                <span class="text-[11px] font-semibold ${expired ? 'text-amber-300' : 'text-slate-400'}">${statusText}</span>
               </div>
-              <h4 class="font-extrabold text-white line-clamp-1">${p.title}</h4>
+              <h4 class="font-extrabold text-white line-clamp-1">${escapeHtml(p.title)}</h4>
               <p class="text-orange-400 font-black">${formatVND(p.price)}</p>
             </div>
           </div>
@@ -1270,12 +2156,15 @@
       if (!isAdminSession()) return;
       const phone = normalizePhone(document.getElementById('banPhoneInput').value);
       const reason = document.getElementById('banReasonInput').value.trim() || 'Vi phạm quy định sàn';
-      if (!phone || phone === ADMIN_CODE) return alert('Nhập SĐT hợp lệ cần khóa!');
+      if (!isValidVnPhone10(phone)) return alert('Nhập đúng SĐT di động 10 số hợp lệ cần khóa!');
       if (!blacklist.includes(phone)) {
         blacklist.push(phone);
         saveLocalCache();
         renderAdminData();
         renderMarket();
+        renderAlerts();
+        checkFormBanWarning('post');
+        checkFormBanWarning('alert');
         document.getElementById('banPhoneInput').value = '';
         document.getElementById('banReasonInput').value = '';
         await postToCloud({ action: 'BAN_PHONE', phone, reason });
@@ -1287,18 +2176,23 @@
 
     async function unbanPhone(phone) {
       if (!isAdminSession()) return;
-      blacklist = blacklist.filter(b => normalizePhone(b) !== normalizePhone(phone));
+      const normTarget = normalizePhone(phone);
+      blacklist = blacklist.filter(b => extractBlacklistPhone(b) !== normTarget);
       saveLocalCache();
       renderAdminData();
       renderMarket();
-      await postToCloud({ action: 'UNBAN_PHONE', phone });
+      renderAlerts();
+      checkFormBanWarning('post');
+      checkFormBanWarning('alert');
+      await postToCloud({ action: 'UNBAN_PHONE', phone: normTarget });
     }
 
     function renderAdminData() {
       const blackContainer = document.getElementById('blacklistContainer');
-      blackContainer.innerHTML = blacklist.length === 0
+      const normalizedList = Array.from(new Set(blacklist.map(b => extractBlacklistPhone(b)).filter(Boolean)));
+      blackContainer.innerHTML = normalizedList.length === 0
         ? `<p class="text-[11px] text-slate-500">Chưa có SĐT nào bị khóa.</p>`
-        : blacklist.map(b => `
+        : normalizedList.map(b => `
             <div class="flex items-center justify-between bg-slate-800 p-2 rounded-xl border border-slate-700 text-xs text-slate-200">
               <span><i class="fa-solid fa-ban text-rose-400 mr-2"></i>${b}</span>
               <button onclick="unbanPhone('${b}')" class="text-xs text-slate-400 hover:text-emerald-400 font-bold">Mở khóa</button>
@@ -1311,10 +2205,10 @@
         : logs.map(l => `
             <div class="bg-slate-800 p-2.5 rounded-xl border border-slate-700 text-[11px] space-y-1">
               <div class="flex items-center justify-between font-bold text-slate-100">
-                <span>Mã: ${l.productId || ''}</span>
+                <span>Mã: ${escapeHtml(l.productId || '')}</span>
                 <span class="text-orange-400">${formatVND(l.commission)} (10%)</span>
               </div>
-              <p class="text-slate-400">Người mua: ${l.buyerPhone || ''} • Người bán: ${l.sellerPhone || ''}</p>
+              <p class="text-slate-400">Người mua: ${escapeHtml(l.buyerPhone || '')} • Người bán: ${escapeHtml(l.sellerPhone || '')}</p>
             </div>
           `).join('');
     }
